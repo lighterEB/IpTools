@@ -3,9 +3,8 @@
 import sys
 import os
 import time
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QMainWindow,  QApplication,  QMessageBox
 from PyQt5.QtCore import *
-from PyQt5.QtGui import *
 from NewWin import Ui_MainWindow
 
 
