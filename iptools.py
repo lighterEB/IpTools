@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import os
+import subprocess
 import time
 from PyQt5.QtWidgets import QMainWindow,  QApplication,  QMessageBox
 from PyQt5.QtCore import *
@@ -108,11 +108,13 @@ class Ping_(QThread):
     
     def run(self):
         global getip, getport
+        si = subprocess.STARTUPINFO()
+        si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         item = 'ping -w 1000 -n 10 ' + getip + '\t'
-        res = os.popen(item)
+        mProcess = subprocess.Popen(item, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,universal_newlines=True,startupinfo=si)
         try:
             #p = "ping www.baidu.com"
-            for line in res:
+            for line in mProcess.stdout:
                 self._signal.emit(line)
         except:
             pass
@@ -156,16 +158,18 @@ class Tracert_(QThread):
         
     def run(self):
         global getip
+        si = subprocess.STARTUPINFO()
+        si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         item = 'tracert -w 10 -h 30 -d '+ getip
-        line = os.popen(item)
+        mProcess = subprocess.Popen(item, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,universal_newlines=True,startupinfo=si)
         try:
-            for res in line:
+            for res in mProcess.stdout:
                 self._signal.emit(res)
         except:
             pass
             
 class IpAddr_(QThread):
-    """tracert测试的子线程"""
+    """IP地址查询的子线程"""
     _signal = pyqtSignal(str)
     def __init__(self, parent=None):
         super(IpAddr_, self).__init__(parent)
