@@ -51,7 +51,7 @@ class IpTools(QMainWindow,  Ui_MainWindow):
         getport = self.port.text()
         self.thread2 = Telnet_()
         self.thread2.start()
-        self.thread2._signal.connect(self.UpdateBrowser)
+        self.thread2._signal.connect(self.Info)
        
         
 
@@ -85,23 +85,14 @@ class IpTools(QMainWindow,  Ui_MainWindow):
             QMessageBox.warning(self, "错误", "请检查输入是否正确",  QMessageBox.Yes)
         elif msg == 'f':
             QMessageBox.warning(self, "错误", "请检查网络是否正常",  QMessageBox.Yes)
+        elif msg == 'w':
+            w = '输入有误，请检查！'
+            QMessageBox.warning(self, "错误", w,  QMessageBox.Yes)
+        elif msg == 'wa':
+            wa = '端口号必须是0-65535，请检查！'
+            QMessageBox.warning(self, "错误", wa,  QMessageBox.Yes)
         else:
             self.textBrowser.append(msg)
-#        response = requests.get("http://www.ip138.com/ips1388.asp?ip=%s&action=2"%(getip))
-#        r = response.content.decode('gbk')
-#        soup = BeautifulSoup(r, 'lxml')
-#        result = soup.find_all('li')
-#        l = []
-#        try:
-#            for addr in result:
-#                adlist = addr.get_text().split('：')
-#                l.append([adlist[1]])
-#            self.textBrowser.append('查询IP：' + getip)
-#            self.textBrowser.append('查询地址一： ' + ''.join(l[0]) )
-#            self.textBrowser.append('查询地址二： ' + ''.join(l[1]) )
-#            self.textBrowser.append('查询地址三： ' + ''.join(l[2]) )
-#        except:
-#            QMessageBox.warning(self, "错误", "请检查输入是否正确",  QMessageBox.Yes)
 
     def UpdateBrowser(self, msg):
         """将子线程的信息回传"""
@@ -148,12 +139,10 @@ class Telnet_(QThread):
         except socket.error:
             n = 'IP:{} 端口：{} 连接失败'.format(getip, getport)
             self._signal.emit(n) 
-        except ValueError as e:
-            e = '输入有误，请检查！'
-            self._signal.emit(e)
-        except OverflowError as e:
-            e = '端口号必须是0-65535，请检查！'
-            self._signal.emit(e)
+        except ValueError as w:
+            self._signal.emit('w')
+        except OverflowError as wa:
+            self._signal.emit('wa')
 
         s.close()
 
