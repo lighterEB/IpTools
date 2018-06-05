@@ -12,3 +12,10 @@
 
 # 运行截图
 ![image](https://raw.githubusercontent.com/lighterEB/IpTools/master/img-folder/running.png)
+
+# 已知问题（待解决）
+在开启其中一个线程并且还未结束时再开启另一个工作线程之前的线程不会暂停或结束。导致输出显示时会出现混乱的现象。
+
+# 尝试
+加入线程开启判定变量，若有线程开启先暂停输出再进行新的工作线程。
+
